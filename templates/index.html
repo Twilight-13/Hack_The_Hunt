@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body, html { height: 100%; margin: 0; overflow: hidden; }
+        .bg-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; object-fit: cover; }
+        .form-container { background: rgba(0, 0, 0, 0.6); padding: 2rem; border-radius: 0.5rem; }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="bg-video">
+        <source src="{% static 'landing-bg.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="flex h-screen justify-center items-center">
+        <div class="form-container text-white w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-4 text-center">Enter the Portal</h1>
+            <form method="POST" action="/login/">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="block text-sm mb-1" for="team_number">Team Number</label>
+                    <input type="text" name="team_number" id="team_number" required class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm mb-1" for="passcode">Passcode</label>
+                    <input type="password" name="passcode" id="passcode" required class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Enter</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

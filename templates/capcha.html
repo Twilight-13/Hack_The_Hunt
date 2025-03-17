@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Challenge</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body { background-color: #0e0e0e; color: #fff; }
+        .image-container { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; }
+        .captcha-image { width: 100px; height: 100px; border: 2px solid #2563eb; border-radius: 0.5rem; object-fit: cover; }
+        .input-box { padding: 0.5rem; background-color: #1e1e1e; color: #fff; border: 1px solid #2563eb; border-radius: 0.3rem; }
+        .btn { padding: 0.5rem 1rem; background-color: #2563eb; color: #fff; border-radius: 0.3rem; cursor: pointer; }
+        .btn:hover { background-color: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="flex flex-col items-center justify-center h-screen">
+        <h1 class="text-2xl mb-4">Captcha Challenge</h1>
+
+        <form method="POST" action="/capcha/verify/">
+            {% csrf_token %}
+            <div class="image-container">
+                <img src="{% static 'images/captcha1.png' %}" alt="Captcha 1" class="captcha-image">
+                <img src="{% static 'images/captcha2.png' %}" alt="Captcha 2" class="captcha-image">
+                <img src="{% static 'images/captcha3.png' %}" alt="Captcha 3" class="captcha-image">
+                <img src="{% static 'images/captcha4.png' %}" alt="Captcha 4" class="captcha-image">
+                <img src="{% static 'images/captcha5.png' %}" alt="Captcha 5" class="captcha-image">
+                <img src="{% static 'images/captcha6.png' %}" alt="Captcha 6" class="captcha-image">
+            </div>
+
+            <input type="text" name="captcha_code" placeholder="Enter the combined code" class="input-box w-full max-w-md" required>
+
+            <button type="submit" class="btn mt-4">Submit Code</button>
+        </form>
+
+        {% if feedback %}
+            <div class="feedback mt-4">
+                {{ feedback }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
