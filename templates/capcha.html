@@ -7,39 +7,137 @@
     <title>Captcha Challenge</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <style>
-        body { background-color: #0e0e0e; color: #fff; }
-        .image-container { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; }
-        .captcha-image { width: 100px; height: 100px; border: 2px solid #2563eb; border-radius: 0.5rem; object-fit: cover; }
-        .input-box { padding: 0.5rem; background-color: #1e1e1e; color: #fff; border: 1px solid #2563eb; border-radius: 0.3rem; }
-        .btn { padding: 0.5rem 1rem; background-color: #2563eb; color: #fff; border-radius: 0.3rem; cursor: pointer; }
-        .btn:hover { background-color: #1e40af; }
+        body { 
+            margin: 0;
+            padding: 0;
+            color: #fff; 
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        /* Background Video */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Place behind content */
+        }
+        /* Form Styling */
+        .form-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            padding: 2rem; 
+            text-align: center;
+        }
+        /* Grid Layout for Captcha Images */
+        .image-container { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+        .captcha-image { 
+            width: 275px; 
+            height: 275px; 
+            border: 2px solid #2563eb; 
+            border-radius: 0.5rem; 
+            object-fit: cover; 
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); 
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out; 
+        }
+        .captcha-image:hover { 
+            transform: scale(1.5); 
+            z-index: 10; 
+            filter: hue-rotate(15deg) contrast(1.2) saturate(1.5); 
+        }
+        /* Input & Button */
+        .input-box { 
+            padding: 0.75rem; 
+            background-color: #ffffff; 
+            color: #000; 
+            border: 2px solid #2563eb; 
+            border-radius: 0.5rem; 
+            font-size: 1rem; 
+            width: 100%;
+            max-width: 400px;
+            transition: box-shadow 0.3s ease-in-out; 
+        }
+        .input-box:focus { 
+            outline: none; 
+            box-shadow: 0 0 10px #2563eb, 0 0 20px #2563eb; 
+        }
+        .btn { 
+            padding: 0.75rem 1.5rem; 
+            background: linear-gradient(135deg, #2563eb, #1e40af); 
+            color: #fff; 
+            border: none; 
+            border-radius: 0.5rem; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
+        }
+        .btn:hover { 
+            transform: scale(1.1); 
+            box-shadow: 0 0 15px #2563eb, 0 0 30px #2563eb; 
+        }
+
+        /* ✅ Styling for the "SUCCESSFUL" message */
+        .success-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: 5rem;
+            color: #4caf50; /* Green color for success */
+            font-weight: bold;
+            text-shadow: 0 0 20px #4caf50, 0 0 40px #4caf50;
+        }
     </style>
 </head>
 <body>
-    <div class="flex flex-col items-center justify-center h-screen">
-        <h1 class="text-2xl mb-4">Captcha Challenge</h1>
 
-        <form method="POST" action="/capcha/verify/">
-            {% csrf_token %}
-            <div class="image-container">
-                <img src="{% static 'images/captcha1.png' %}" alt="Captcha 1" class="captcha-image">
-                <img src="{% static 'images/captcha2.png' %}" alt="Captcha 2" class="captcha-image">
-                <img src="{% static 'images/captcha3.png' %}" alt="Captcha 3" class="captcha-image">
-                <img src="{% static 'images/captcha4.png' %}" alt="Captcha 4" class="captcha-image">
-                <img src="{% static 'images/captcha5.png' %}" alt="Captcha 5" class="captcha-image">
-                <img src="{% static 'images/captcha6.png' %}" alt="Captcha 6" class="captcha-image">
-            </div>
+    <!-- Background Video -->
+    <video class="video-background" autoplay loop muted playsinline>
+        <source src="{% static 'Glitchbg.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-            <input type="text" name="captcha_code" placeholder="Enter the combined code" class="input-box w-full max-w-md" required>
+    {% if success %}
+        <!-- ✅ Display "SUCCESSFUL" in the center when captcha is correct -->
+        <div class="success-container">
+            SUCCESSFUL ✅
+        </div>
+    {% else %}
+        <!-- Captcha Form -->
+        <div class="form-container">
+            <form method="POST" action="{% url 'verify_captcha' %}">
+                {% csrf_token %}
+                
+                <div class="image-container">
+                    <img src="{% static 'capcha-1.jpg' %}" alt="Captcha 1" class="captcha-image">
+                    <img src="{% static 'capcha-2.jpg' %}" alt="Captcha 2" class="captcha-image">
+                    <img src="{% static 'capcha-3.jpg' %}" alt="Captcha 3" class="captcha-image">
+                    <img src="{% static 'capcha-4.jpg' %}" alt="Captcha 4" class="captcha-image">
+                    <img src="{% static 'capcha-5.png' %}" alt="Captcha 5" class="captcha-image">
+                    <img src="{% static 'capcha-6.jpg' %}" alt="Captcha 6" class="captcha-image">
+                </div>
 
-            <button type="submit" class="btn mt-4">Submit Code</button>
-        </form>
+                <input type="text" name="captcha_code" placeholder="Enter the combined code" class="input-box" required>
+                <button type="submit" class="btn mt-4">Submit Code</button>
+            </form>
 
-        {% if feedback %}
-            <div class="feedback mt-4">
-                {{ feedback }}
-            </div>
-        {% endif %}
-    </div>
+            {% if feedback %}
+                <div class="feedback mt-4 text-lg text-red-400 font-bold">
+                    {{ feedback }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
 </body>
 </html>

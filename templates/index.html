@@ -10,6 +10,7 @@
         body, html { height: 100%; margin: 0; overflow: hidden; }
         .bg-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; object-fit: cover; }
         .form-container { background: rgba(0, 0, 0, 0.6); padding: 2rem; border-radius: 0.5rem; }
+        .error-message { color: #ff4444; text-align: center; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
@@ -21,15 +22,29 @@
     <div class="flex h-screen justify-center items-center">
         <div class="form-container text-white w-full max-w-md">
             <h1 class="text-2xl font-bold mb-4 text-center">Enter the Portal</h1>
-            <form method="POST" action="/login/">
+
+            <!-- Display error message if credentials are incorrect -->
+            {% if messages %}
+                <div class="error-message">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'landing' %}">
                 {% csrf_token %}
                 <div class="mb-4">
                     <label class="block text-sm mb-1" for="team_number">Team Number</label>
-                    <input type="text" name="team_number" id="team_number" required class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+                    <input type="text" name="team_number" id="team_number" required 
+                           class="w-full p-2 rounded bg-gray-800 border border-gray-600" 
+                           placeholder="e.g., Team1">
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm mb-1" for="passcode">Passcode</label>
-                    <input type="password" name="passcode" id="passcode" required class="w-full p-2 rounded bg-gray-800 border border-gray-600">
+                    <input type="password" name="passcode" id="passcode" required 
+                           class="w-full p-2 rounded bg-gray-800 border border-gray-600" 
+                           placeholder="Enter the answer">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Enter</button>
             </form>

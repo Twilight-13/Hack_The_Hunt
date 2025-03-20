@@ -20,7 +20,8 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("Home.urls")),
-    path("code", include("Code.urls")),  # Ensure the trailing slash here
-    path("capcha", include("Capcha.urls")),
+    path("code/", include("Code.urls")),  # Ensure the trailing slash here
+    path("capcha/", include("Capcha.urls")),
+
 
 ]

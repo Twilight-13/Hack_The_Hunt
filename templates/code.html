@@ -6,50 +6,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Binary Decoder Challenge</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    
     <style>
-        body { background-color: #0e0e0e; color: #fff; }
-        .editor { background: #1e1e1e; color: #dcdcdc; padding: 1rem; border-radius: 0.5rem; min-height: 300px; font-family: monospace; }
-        .btn { padding: 0.5rem 1rem; background-color: #2563eb; color: #fff; border-radius: 0.3rem; cursor: pointer; }
-        .btn:hover { background-color: #1e40af; }
-        .feedback { margin-top: 1rem; font-weight: bold; }
-    </style>
-    <script>
-        function switchLanguage() {
-            document.getElementById('languageForm').submit();
+        body { 
+            margin: 0;
+            padding: 0;
+            color: #fff; 
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; /* Prevent scrollbars */
         }
-    </script>
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Place behind content */
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparent background for contrast */
+            border-radius: 1rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        /* ✅ Make the binary code uncopyable */
+        .binary-code {
+            font-family: monospace;
+            font-size: 1.4rem;
+            color: #00ffcc;
+            background: #222;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            border: 2px solid #00ffcc;
+            user-select: none; /* Prevents copying */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #2563eb, 0 0 30px #2563eb;
+        }
+        .input-field, .output-field {
+            width: 100%;
+            max-width: 600px;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid #2563eb;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            background: #fff;
+            color: #000;
+        }
+        .next-btn {
+            background: #4caf50;
+            color: #fff;
+        }
+        .next-btn:hover {
+            background: #388e3c;
+            box-shadow: 0 0 15px #4caf50;
+        }
+    </style>
+
 </head>
 <body>
-    <div class="flex flex-col items-center justify-center h-screen">
-        <h1 class="text-2xl mb-4">Binary Decoder Challenge</h1>
 
-        <form method="POST" action="/code/" id="languageForm" class="w-full max-w-2xl">
-            {% csrf_token %}
-            <label for="language" class="block mb-2">Select Language:</label>
-            <select name="language" id="language" onchange="switchLanguage()" class="editor w-full mb-4">
-                <option value="python" {% if language == 'python' %}selected{% endif %}>Python</option>
-                <option value="c" {% if language == 'c' %}selected{% endif %}>C</option>
-            </select>
+<!-- ✅ Background Video -->
+<video class="video-background" autoplay loop muted playsinline>
+    <source src="{% static 'Glitchbg.mp4' %}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
 
-            <textarea name="code" class="editor w-full" required>{{ initial_code }}</textarea>
-            <button type="submit" class="btn mt-4">Run Code</button>
-        </form>
+<div class="form-container">
+    <h1>Decode this Binary to String:</h1>
 
-        {% if output %}
-            <div class="feedback">
-                <h2>Output:</h2>
-                <pre>{{ output }}</pre>
-            </div>
-        {% endif %}
-
-        {% if feedback %}
-            <div class="feedback">
-                {{ feedback }}
-            </div>
-            {% if success %}
-                <a href="/next_level/" class="btn mt-2">Proceed to Next Level</a>
-            {% endif %}
-        {% endif %}
+    <!-- ✅ Uncopyable Binary Code -->
+    <div class="binary-code">
+        01011001011011110111010001011111011100110100000001110110001100110110010001011111011101000110100000110011
     </div>
+
+    <!-- ✅ Binary to String Form -->
+    <form method="POST" action="{% url 'decode_binary' %}">
+        {% csrf_token %}
+        <input type="text" name="binary_input" placeholder="Enter binary code here..." class="input-field" required>
+
+        <button type="submit" class="btn">Convert</button>
+    </form>
+
+    <!-- ✅ Output Display -->
+    {% if output %}
+    <div class="output-field">
+        <strong>Output:</strong> {{ output }}
+    </div>
+    {% endif %}
+
+    <!-- ✅ Next Button -->
+    <a href="{% url 'next_level' %}" class="btn next-btn">Next</a>
+
+</div>
+
 </body>
 </html>
